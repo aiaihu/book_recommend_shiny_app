@@ -42,7 +42,7 @@ server <- function(input, output) {
   })
 
   getBooks <- reactive({
-    num_books = 10
+    num_books = 20
     books <- getSampleBooks(num_books)
     lapply(1:num_books, function(i) {
       div(class = "book",
