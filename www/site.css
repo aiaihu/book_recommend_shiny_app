@@ -1,0 +1,29 @@
+.book {
+    text-align: center;
+    padding: 15px;
+    clear: both;
+}
+
+.book > .image {
+    float: left
+}
+
+.book > .largeImage {
+    float: left
+}
+
+.book > .image img {
+    max-width: 50px;
+    max-height: 75px;
+}
+
+.book .author {
+    color: #999999;
+    font-size: 80%;
+}
+
+
+.book .rating {
+    color: #f0ad4e;
+    clear: both
+}
