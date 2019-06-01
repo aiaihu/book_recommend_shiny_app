@@ -20,40 +20,45 @@ get_user_ratings <- function(value_list) {
 server <- function(input, output) {
   showResultsPressed <- reactive({
     value_list <- reactiveValuesToList(input)
-    ratings <- get_user_ratings(value_list)
-    if (length(ratings$rating) < 5) {
+    user_ratings <- get_user_ratings(value_list)
+    if (length(user_ratings$rating) < 5) {
       output$message <- renderText({
         "You have to rate at least 5 books to get the recommendations!"
       })
     } else {
-      output$recommendations <- renderUI({
-        recommendations = getRecommendations(ratings)
-        lapply(1:length(recommendations$book_id), function(i) {
-          div(class = "book",
-            div(class = "largeImage", img(src = books$image_url[i])),
-            div(class = "info",
-              div(class = "author", books$authors[i]),
-              div(class = "title", strong(books$title[i]))
+      recommendations = getRecommendations(user_ratings)
+      if (length(recommendations$book_id) > 0) {
+        output$message <- renderText({ "" })
+        output$recommendations <- renderUI({
+          lapply(1:length(recommendations$book_id), function(i) {
+            div(class = "book",
+              div(class = "largeImage", img(src = recommendations$image_url[i])),
+              div(class = "info",
+                div(class = "author", recommendations$authors[i]),
+                div(class = "title", strong(recommendations$title[i]))
+              )
             )
-          )
+          })
         })
-      })
+      } else {
+        output$message <- renderText({ "No recommendation. Please try again." })
+      }
     }
   })
 
   getBooks <- reactive({
     num_books = 20
-    books <- getSampleBooks(num_books)
+    theBooks <- getSampleBooks(num_books)
     lapply(1:num_books, function(i) {
       div(class = "book",
-          div(class = "image", img(src = books$small_image_url[i])),
+          div(class = "image", img(src = theBooks$small_image_url[i])),
           div(class = "info",
-            div(class = "author", books$authors[i]),
-            div(class = "title", strong(books$title[i]))
+            div(class = "author", theBooks$authors[i]),
+            div(class = "title", strong(theBooks$title[i]))
           ),
           div(class = "rating", 
               sliderInput(
-                paste("rating_", books$book_id[i]), 
+                paste("rating_", theBooks$book_id[i]), 
                 "",
                 min = 0, 
                 max = 5, 
